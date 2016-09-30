@@ -1,0 +1,19 @@
+{
+  "name": "stm-datepick",
+  "version": "1.0.0",
+  "description": "Datepicker tool with support of natural date format input, ranges and accessibility",
+  "main": "src/datepick.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SmartTeleMax/stm-datepick.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SmartTeleMax/stm-datepick/issues"
+  },
+  "homepage": "https://github.com/SmartTeleMax/stm-datepick#readme"
+}
