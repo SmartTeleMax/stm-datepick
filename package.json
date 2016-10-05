@@ -2,9 +2,11 @@
   "name": "stm-datepick",
   "version": "1.0.0",
   "description": "Datepicker tool with support of natural date format input, ranges and accessibility",
-  "main": "src/datepick.js",
+  "main": "lib/datepick.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "rimraf lib/* && babel src -d lib",
+    "prepublish": "npm run compile"
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,17 @@
   "bugs": {
     "url": "https://github.com/SmartTeleMax/stm-datepick/issues"
   },
-  "homepage": "https://github.com/SmartTeleMax/stm-datepick#readme"
+  "homepage": "https://github.com/SmartTeleMax/stm-datepick#readme",
+  "dependencies": {
+    "moment": "^2.9.0",
+    "stm-detector": "^1.0.0",
+    "core-js": "^2.4.1",
+    "jquery": ">= 1.11.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.16.0",
+    "babel-core": "^6.17.0",
+    "babel-preset-es2015": "^6.16.0",
+    "rimraf": "^2.5.4"
+  }
 }

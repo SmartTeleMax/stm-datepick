@@ -1,46 +1,21 @@
 /*jslint esversion: 6, -W097, browser: true */
-/* globals jQuery, $ */
 
-import "vendor/iso8601"; // Date.parse
-let moment = require("moment");
+'use strict';
+
+import "./vendor/iso8601"; // Date.parse // XXX CoreJS?
+require('core-js/es5');
+var moment = require("moment");
+var $ = require('jquery');
 import {Calendar} from "./calendar";
-import {router} from "main";
-import {isMobile, isTablet} from "gov/detector"
+import {unifiedDate, DateRangeParser as _DateRangeParser} from "./date_range_parser";
+import {isMobile, isTablet} from "stm-detector"
 
-(function($) {
-    'use strict';
+export var DateRangeParser = _DateRangeParser;
 
-    $.fn.zIndex = function(zIndex) {
-        if (zIndex !== undefined) {
-            return this.css('zIndex', zIndex);
-        }
-
-        if (this.length) {
-            var elem = $(this[0]), position, value;
-            while (elem.length && elem[0] !== document) {
-                // Ignore z-index if position is set to a value where z-index is ignored by the browser
-                // This makes behavior of this function consistent across browsers
-                // WebKit always returns auto if the element is positioned
-                position = elem.css('position');
-                if (position === 'absolute' || position === 'relative' || position === 'fixed') {
-                    // IE returns 0 when zIndex is not specified
-                    // other browsers return a string
-                    // we ignore the case of nested elements with an explicit value of 0
-                    // <div style="z-index: -10;"><div style="z-index: 0;"></div></div>
-                    value = parseInt(elem.css('zIndex'), 10);
-                    if (!isNaN(value) && value !== 0) {
-                        return value;
-                    }
-                }
-                elem = elem.parent();
-            }
-        }
-
-        return 0;
-    };
-
-    function DatePicker(element, options) {
+export class DatePicker {
+    constructor(element, options) {
         this.options = options;
+        this.handleURL = options.handleURL || this.handleURL;
         this.$element = $(element);
         this.isInput = this.$element.is('input');
 
@@ -82,7 +57,7 @@ import {isMobile, isTablet} from "gov/detector"
         this.init();
     }
 
-    DatePicker.prototype.init = function datePickerInitPrototype() {
+    init() {
         var $element = this.$element;
         this.$clearButton = $element.nextAll('.clear_date_filter');
 
@@ -160,9 +135,9 @@ import {isMobile, isTablet} from "gov/detector"
         if (!this.submitOnChange) { // XXX
             this.$clearButton.on('click', this.onClearClick.bind(this));
         }
-    };
+    }
 
-    DatePicker.prototype.selectRange = function selectRange(range) {
+    selectRange(range) {
         if (range && range.start && range.end) {
             this.value = range.end;
             var days = Math.floor((range.end - range.start) /
@@ -201,9 +176,9 @@ import {isMobile, isTablet} from "gov/detector"
 
             this.hide();
         }
-    };
+    }
 
-    DatePicker.prototype.onContainerClick = function(e) {
+    onContainerClick(e) {
         var $tgt = $(e.target);
         if ($tgt.closest('.dateblock')) {
             e.stopPropagation();
@@ -218,9 +193,9 @@ import {isMobile, isTablet} from "gov/detector"
             }
             this.selectRange({start: date, end: date});
         }
-    };
+    }
 
-    DatePicker.prototype.onMonthRender = function(e) {
+    onMonthRender(e) {
         var date;
         if (e.detail) {
             date = e.detail;
@@ -273,9 +248,9 @@ import {isMobile, isTablet} from "gov/detector"
                 }
             }.bind(this));
         }
-    };
+    }
 
-    DatePicker.prototype.onMonthRemove = function(e) {
+    onMonthRemove(e) {
         var date;
         if (e.detail) {
             date = e.detail;
@@ -288,9 +263,9 @@ import {isMobile, isTablet} from "gov/detector"
             req.abort();
             delete this.pendingRequests[dateString];
         }
-    };
+    }
 
-    DatePicker.prototype.onElementClick = function(e, data) {
+    onElementClick(e, data) {
         e.stopPropagation();
         e.preventDefault();
 
@@ -309,9 +284,9 @@ import {isMobile, isTablet} from "gov/detector"
         }.bind(this));
 
         //this.calendar.scrollToMonth(this.value);
-    };
+    }
 
-    DatePicker.prototype.onClearClick = function(e) {
+    onClearClick(e) {
         e.stopPropagation();
         e.preventDefault();
 
@@ -328,13 +303,13 @@ import {isMobile, isTablet} from "gov/detector"
         this.$clearButton.addClass('hidden');
         this.hide();
         this.$element.focus();
-    };
+    }
 
-    DatePicker.prototype.toggle = function(e) {
+    toggle(e) {
         e.stopPropagation();
-    };
+    }
 
-    DatePicker.prototype.reposition = function() {
+    reposition() {
         var $container = $(this.calendar.container);
         var bounds = this.$element.get(0).getBoundingClientRect();
         $container.css({
@@ -345,9 +320,9 @@ import {isMobile, isTablet} from "gov/detector"
             // TODO
             // почему функция так странно работает? не совсем понятно, что хотелось получить
         });
-    };
+    }
 
-    DatePicker.prototype.show = function(options) {
+    show(options) {
         if (this.isVisible) {
             return;
         }
@@ -355,13 +330,8 @@ import {isMobile, isTablet} from "gov/detector"
         $(document.body).append($container);
         $container.show();
         this.$element.addClass('is-active');
-        var self = this;
-        $(window).bind('scroll.picker', function() {
-            self.reposition();
-        });
-        $(window).bind('resize.picker', debounce(function() {
-            self.reposition();
-        }, 300));
+        $(window).bind('scroll.picker', this.reposition.bind(this));
+        $(window).bind('resize.picker', debounce(this.reposition.bind(this), 300));
         this.reposition();
         if (this.value) {
             this.calendar.setSelection(this.value);
@@ -380,9 +350,9 @@ import {isMobile, isTablet} from "gov/detector"
         } else {
             $(this.calendar.accessibleInput).focus();
         }
-    };
+    }
 
-    DatePicker.prototype.hide = function() {
+    hide() {
         if (!this.isVisible) {
             return;
         }
@@ -397,9 +367,9 @@ import {isMobile, isTablet} from "gov/detector"
         this.calendar.isVisible = false;
         this.isVisible = false;
         this.$element.trigger('hide');
-    };
+    }
 
-    DatePicker.prototype.setValue = function(date) {
+    setValue(date) {
         var targetSelector = this.$element.data('target');
         date.setHours(0, 0, 0);
         this.value = date;
@@ -424,25 +394,25 @@ import {isMobile, isTablet} from "gov/detector"
                 this.$element.val(moment(date).format('DD.MM.YYYY'));
             }
         }
-    };
+    }
 
-    DatePicker.prototype.setEnabledDate = function(date, day) {
+    setEnabledDate(date, day) {
         if (this.calendar) {
-            date = this.calendar.unifiedDate(date).clone().date(day);
+            date = unifiedDate(date).clone().date(day);
             var cell = this.calendar.getDateCell(date);
             if (cell) {
                 $(cell).addClass('enabled');
             }
         }
-    };
+    }
 
-    DatePicker.prototype.setEnabledDates = function(date, dates) {
+    setEnabledDates(date, dates) {
         for (var i = 0; i < dates.length; i++) {
             this.setEnabledDate(date, dates[i]);
         }
-    };
+    }
 
-    DatePicker.prototype.loadByDate = function(dateString) {
+    loadByDate(dateString) {
         var date = new Date(Date.parse(dateString));
         var dateForUrl = moment(date).format('DD.MM.YYYY');
         var url = this.$element.data('date-url');
@@ -451,15 +421,11 @@ import {isMobile, isTablet} from "gov/detector"
         }
 
         this.$element.text(moment(date).format('MMMM, YYYY'));
-        router.one('loaded.by-date', function() {
-            router.off('loaded.by-date');
-            this.$element.removeClass('is-loading');
-        }.bind(this));
-        this.$element.addClass('is-loading');
-        router.handleURL(url);
-    };
 
-    DatePicker.prototype.onBlur = function() {
+        this.handleURL(url, this);
+    }
+
+    onBlur() {
         var targetSelector = this.$element.data('target');
         if (targetSelector) {
             var date = new Date($dateInput.val());
@@ -474,41 +440,37 @@ import {isMobile, isTablet} from "gov/detector"
         } else {
             this.loadByDate($dateInput.val());
         }
-    };
+    }
 
-    DatePicker.prototype.onWindowClick = function(e) {
+    onWindowClick(e) {
        if ($(e.target).closest('.calendar-container').length <= 0) {
            this.$element.removeClass('is-active');
            this.hide();
        }
-    };
+    }
 
-    DatePicker.prototype.destroy = function() {
+    destroy() {
         this.hide();
         if (this.calendar) {
             $(this.calendar.container).detach();
             this.calendar = null;
         }
-    };
-
-    function zeroPad(num, places) {
-        var zero = places - num.toString().length + 1;
-        return Array(+(zero > 0 && zero)).join('0') + num;
     }
+}
 
-    $.fn.datepick = function jQueryFnDatePick(option) {
-        this.each(function() {
-            var $this = $(this);
-            var data = $this.data('datepick');
-            var options = typeof option === 'object' && option;
 
-            if (!data) {
-                var picker = new DatePicker(this, options);
-                $.fn.datepick.pickers.push(picker);
-                $this.data('datepick', (data = picker));
-            }
-        });
-    };
+$.fn.datepick = function jQueryFnDatePick(option) {
+    this.each(function() {
+        var $this = $(this);
+        var data = $this.data('datepick');
+        var options = typeof option === 'object' && option;
 
-    $.fn.datepick.pickers = [];
-})(jQuery);
+        if (!data) {
+            var picker = new DatePicker(this, options);
+            $.fn.datepick.pickers.push(picker);
+            $this.data('datepick', (data = picker));
+        }
+    });
+};
+
+$.fn.datepick.pickers = [];
