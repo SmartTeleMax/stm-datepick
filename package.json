@@ -4,7 +4,7 @@
   "description": "Datepicker tool with support of natural date format input, ranges and accessibility",
   "main": "lib/datepick.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run compile && mocha test/",
     "compile": "rimraf lib/* && babel src -d lib",
     "prepublish": "npm run compile"
   },
@@ -28,6 +28,8 @@
     "babel-cli": "^6.16.0",
     "babel-core": "^6.17.0",
     "babel-preset-es2015": "^6.16.0",
+    "chai": "latest",
+    "mocha": "latest",
     "rimraf": "^2.5.4"
   }
 }
