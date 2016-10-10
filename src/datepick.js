@@ -1,4 +1,5 @@
 /*jslint esversion: 6, -W097, browser: true */
+/* globals console, require */
 
 'use strict';
 
@@ -8,7 +9,7 @@ var moment = require("moment");
 var $ = require('jquery');
 import {Calendar} from "./calendar";
 import {unifiedDate, DateRangeParser as _DateRangeParser} from "./date_range_parser";
-import {isMobile, isTablet} from "stm-detector"
+import {isMobile, isTablet} from "stm-detector";
 
 export var DateRangeParser = _DateRangeParser;
 
@@ -425,22 +426,22 @@ export class DatePicker {
         this.handleURL(url, this);
     }
 
-    onBlur() {
-        var targetSelector = this.$element.data('target');
-        if (targetSelector) {
-            var date = new Date($dateInput.val());
-            $(targetSelector).val(moment(date).format('DD.MM.YYYY'));
-            this.$element.find('.current-value').text(moment(date).format('DD.MM.YYYY'));
+    //onBlur() {
+    //    var targetSelector = this.$element.data('target');
+    //    if (targetSelector) {
+    //        var date = new Date($dateInput.val());
+    //        $(targetSelector).val(moment(date).format('DD.MM.YYYY'));
+    //        this.$element.find('.current-value').text(moment(date).format('DD.MM.YYYY'));
 
-            if (this.submitOnChange) {
-                $('.search_results').find('form').submit();
-                this.$element.removeClass('is-active');
-                this.$element.addClass('is-loading');
-            }
-        } else {
-            this.loadByDate($dateInput.val());
-        }
-    }
+    //        if (this.submitOnChange) {
+    //            $('.search_results').find('form').submit();
+    //            this.$element.removeClass('is-active');
+    //            this.$element.addClass('is-loading');
+    //        }
+    //    } else {
+    //        this.loadByDate($dateInput.val());
+    //    }
+    //}
 
     onWindowClick(e) {
        if ($(e.target).closest('.calendar-container').length <= 0) {

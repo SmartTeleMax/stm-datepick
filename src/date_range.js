@@ -1,6 +1,14 @@
+/* jslint esversion: 6, -W097, browser: true */
+/* globals require */
+
 'use strict';
 
 var moment = require("moment");
+
+var SECOND = 1000;
+var MINUTE = 60 * SECOND;
+var HOUR = 60 * MINUTE;
+var DAY = 24 * HOUR;
 
 export class DateRange {
     constructor(start, end) {

@@ -335,7 +335,9 @@ export class DateRangeParser {
                 case this.common.nextyear:
                     return dra(0, 1);
             }
-            console && console.log && console.log("unknown token", m[1]); // jshint ignore:line
+            if (window.console && console.log) {
+                console.log("unknown token", m[1]);
+            }
             return null;
 
         } else if (m[2]) { // matches ([ 0-9:-]+)
@@ -370,7 +372,9 @@ export class DateRangeParser {
             var n = parseInt(dr[1], 10);
             return {rel: n * this._relTokens[dr[2]]};
         }
-        console && console.log && console.log("unknown term", term);
+        if (window.console && console.log) {
+            console.log("unknown term", term);
+        }
         return null;
     }
 
@@ -412,7 +416,7 @@ export class DateRangeParser {
         var r = this.getRange(op, term1, term2, now);
         //r.end && r.end--; // remove 1 millisecond from the final end range
         return r;
-    };
+    }
 
     parseToDate(v, options){
         var range = this.parse(v, options);
@@ -422,7 +426,7 @@ export class DateRangeParser {
         if (range.start) { out.start = new Date(range.start); }
         if (range.end) { out.end = new Date(range.end); }
         return out;
-    };
+    }
 
 
 
