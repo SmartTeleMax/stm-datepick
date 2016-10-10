@@ -7,6 +7,7 @@ import "./vendor/iso8601"; // Date.parse // XXX CoreJS?
 require('core-js/es5');
 var moment = require("moment");
 var $ = require('jquery');
+var debounce = require('debounce');
 import {Calendar} from "./calendar";
 import {unifiedDate, DateRangeParser as _DateRangeParser} from "./date_range_parser";
 import {isMobile, isTablet} from "stm-detector";
