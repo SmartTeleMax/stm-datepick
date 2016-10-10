@@ -1,5 +1,5 @@
 /* jslint esversion: 6, -W097, browser: true */
-/* globals $, jQuery, console, _, require */
+/* globals console, require */
 
 'use strict';
 
@@ -792,8 +792,8 @@ export class Calendar {
         //                                      this.renderedRange.end.toDate() + '')
 
         this.monthsRendered--;
-        var e = jQuery.Event('delete', {detail: edge});
-        jQuery(this.container).trigger(e);
+        var e = $.Event('delete', {detail: edge});
+        $(this.container).trigger(e);
     }
 
     renderMonth(date) {
@@ -830,8 +830,8 @@ export class Calendar {
             this.scrollContainer.scrollTop += this.scrollContainer.scrollHeight - prevHeight;
         }
 
-        var e = jQuery.Event('render', {detail: date});
-        jQuery(this.container).trigger(e);
+        var e = $.Event('render', {detail: date});
+        $(this.container).trigger(e);
         this.monthsRendered++;
         this.doNotListenScrolling = false;
     }
