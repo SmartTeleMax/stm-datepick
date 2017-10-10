@@ -18,6 +18,7 @@ export class DatePicker {
     constructor(element, options) {
         this.options = options;
         this.handleURL = options.handleURL || this.handleURL;
+        this.weekDirection = options.weekDirection || 'left-to-right';
         this.$element = $(element);
         this.isInput = this.$element.is('input');
 
@@ -97,7 +98,8 @@ export class DatePicker {
 
         var lang = $('html').prop('lang');
         this.calendar = new Calendar(container, lang, this.min, this.max,
-                                     {isRange: this.isRange, reversed: !this.isRange});
+                                     {isRange: this.isRange, reversed: !this.isRange,
+                                      weekDirection: this.weekDirection});
 
         if (this.isInput) {
             if (this.$element.prop('type') === 'date') {

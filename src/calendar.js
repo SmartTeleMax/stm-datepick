@@ -159,6 +159,7 @@ export class Calendar {
         };
 
         this.direction = 'down';
+        this.weekDirection = options.weekDirection || 'left-to-right';
 
         container = document.createElement('div');
         container.className = 'calendar-container';
@@ -248,8 +249,8 @@ export class Calendar {
         // today is TZ datetime, date is day start in UTC
         // we can not just compare them
         var today = moment();
-        return today.year() == date.year() && 
-               today.month() == date.month() && 
+        return today.year() == date.year() &&
+               today.month() == date.month() &&
                today.date() == date.date();
     }
 
@@ -474,11 +475,23 @@ export class Calendar {
         var row = document.createElement('div');
 
         var daysInWeek = 7;
-        for (var i = daysInWeek - 1; i >= 0; i--) {
-            var cell = document.createElement('div');
-            cell.innerHTML = this.shortWeekDayNames[i];
-            cell.className = 'calendar-week-day';
-            row.appendChild(cell);
+        if(this.weekDirection == 'right-to-left'){
+            for (var i = daysInWeek - 1; i >= 0; i--) {
+                var cell = document.createElement('div');
+                cell.innerHTML = this.shortWeekDayNames[i];
+                cell.className = 'calendar-week-day';
+                row.appendChild(cell);
+            }
+        } else if(this.weekDirection == 'left-to-right'){
+            for (var i = 0; i < daysInWeek; i++) {
+                var cell = document.createElement('div');
+                cell.innerHTML = this.shortWeekDayNames[i];
+                cell.className = 'calendar-week-day';
+                row.appendChild(cell);
+            }
+
+        } else {
+            throw "Unknown week direction: "+this.weekDirection;
         }
         head.appendChild(row);
 
@@ -723,9 +736,20 @@ export class Calendar {
 
         var row = document.createElement('div');
         row.className = this.classes.row;
-        for (var i = daysInWeek - 1; i >= 0; i--) {
-            newDate = startDate.clone().add(i, 'days');
-            row.appendChild(this.renderDay(newDate));
+
+        if(this.weekDirection == 'right-to-left'){
+            for (var i = daysInWeek - 1; i >= 0; i--) {
+                newDate = startDate.clone().add(i, 'days');
+                row.appendChild(this.renderDay(newDate));
+            }
+
+        } else if(this.weekDirection == 'left-to-right'){
+            for (var i = 0; i < daysInWeek; i++) {
+                newDate = startDate.clone().add(i, 'days');
+                row.appendChild(this.renderDay(newDate));
+            }
+        } else {
+            throw "Unknown week direction: "+this.weekDirection;
         }
 
         var dateString = targetDate.year() + '' + targetDate.month();
