@@ -1,6 +1,6 @@
 {
   "name": "stm-datepick",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Datepicker tool with support of natural date format input, ranges and accessibility",
   "main": "lib/datepick.js",
   "scripts": {
