@@ -1035,6 +1035,10 @@ export class Calendar {
     highLightWeekDay(dayIndex) {
         this.unhighLightWeekDays();
         if (dayIndex === 0) { dayIndex = 7; } // Sunday
+        var index = dayIndex - 1;
+        if(this.weekDirection == 'right-to-left'){
+            index = [7 - dayIndex];
+        }
         $(this.weekDaysRow.childNodes[7 - dayIndex]).addClass('hover');
     }
 
