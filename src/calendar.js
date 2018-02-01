@@ -1037,9 +1037,9 @@ export class Calendar {
         if (dayIndex === 0) { dayIndex = 7; } // Sunday
         var index = dayIndex - 1;
         if(this.weekDirection == 'right-to-left'){
-            index = [7 - dayIndex];
+            index = 7 - dayIndex;
         }
-        $(this.weekDaysRow.childNodes[7 - dayIndex]).addClass('hover');
+        $(this.weekDaysRow.childNodes[index]).addClass('hover');
     }
 
     unhighLightWeekDays() {
